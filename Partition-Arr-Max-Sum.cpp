@@ -2,10 +2,13 @@
 #include<vector>
 using namespace std;
 
-//Recursive approach without memoization
-int rec(int i, vector<int> &arr, int k, int n){
+//Recursion + memoization
+int rec(int i, vector<int> &arr, int k, int n, vector<int> &dp){
     if(i == n){
         return 0;
+    }
+    if(dp[i] != -1){
+        return dp[i];
     }
     int len = 0;
     int maxi = INT_MIN;
@@ -13,14 +16,15 @@ int rec(int i, vector<int> &arr, int k, int n){
     for(int t = i; t < min((i + k),n); t++){
         len += 1;
         maxi = max(maxi, arr[t]);
-        int sum = (len * maxi) + rec(t + 1, arr, k, n);
+        int sum = (len * maxi) + rec(t + 1, arr, k, n, dp);
         res = max(res, sum);
     }
-    return res;   
+    return dp[i] = res;   
 }
 
 int maxSumAfterPartitioning(vector<int>& arr, int k) {
-    return rec(0, arr, k, arr.size());
+    vector<int> dp(arr.size(), -1);
+    return rec(0, arr, k, arr.size(), dp);
 }
 
 int main(){
